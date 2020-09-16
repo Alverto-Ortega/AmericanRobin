@@ -1,6 +1,10 @@
 //app file
 //Entry point of project
 
+//importv
+var fortune = require('./lib/fortune.js');
+
+
 var express = require("express");
 var app = express(); //app creation
 
@@ -21,6 +25,7 @@ app.get('/', function(req, res){
 });
 
 //virtual fortune cookie
+/*
 var fortunes = [
     "Conquer your fears or they will conquer you.",
     "Rivers need springs.",
@@ -28,10 +33,11 @@ var fortunes = [
     "You will have a pleasant surprise.",
     "Whenever possible, keep it simple.",
 ];
+*/
 
 app.get("/about", function(req, res){
-    var randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)]; //randomizes the occurence of the fortune quote
-    res.render('about.handlebars', {fortune: randomFortune});
+    //var randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)]; //randomizes the occurence of the fortune quote
+    res.render('about.handlebars', {fortune: fortune.getFortune()});
 });
 
 
