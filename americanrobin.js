@@ -15,10 +15,20 @@ app.set("View engine", "handlebars");
 
 app.set("port", process.env.PORT || 3000);
 ////////////////////////////////////////////////////////
+
+//(middleware)must go before routes. Detects test=1 in URL querystring
+app.use(function(req, res, next){
+    res.locals.showTests = app.get("env") !== "production" && req.query.test ==="1"; //sets showTests to true if matches
+    next();
+});
+
 //static middleware
 app.use(express.static(__dirname + "/public"));
 
-//routes for home and about page
+/////////////////////////////////////////////////////////////Routes////////////////////////////
+
+//routes for each pages
+//HOME
 app.get('/', function(req, res){
     res.render('home.handlebars'); //calls the view file to display its contents
     
@@ -35,11 +45,24 @@ var fortunes = [
 ];
 */
 
+//ABOUT
 app.get("/about", function(req, res){
     //var randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)]; //randomizes the occurence of the fortune quote
-    res.render('about.handlebars', {fortune: fortune.getFortune()});
+    res.render('about.handlebars', 
+                {fortune: fortune.getFortune(), pageTestScript: '/qa/tests-about.js'});
 });
-
+//HAMDEN TOUR
+app.get("/tours/hamden-sleeping-giant", function(req, res){
+    res.render("tours/hamden-sleepingGiant.handlebars");
+});
+//SawMill City Road Tour
+app.get("/tours/SawMillCity", function(req, res){
+    res.render("tours/SawMillCity.handlebars");
+});
+//REQUEST-GROUP-RATE
+app.get("/tours/request-group-rate", function(req, res){
+    res.render("tours/request-group-rate.handlebars");
+})
 
 // custom 404 page catch-all handler (middleware)
 app.use(function(req, res, next){ 
@@ -55,6 +78,9 @@ app.use(function(err, req, res, next){
     res.render('500.handlebars');
 
 });
+
+
+
 
 app.listen(app.get("port"), function(){
     console.log("Express started on http://localhost:" + app.get("port") + "; press Ctrl-C to terminate.")
